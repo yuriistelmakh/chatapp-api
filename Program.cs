@@ -1,5 +1,9 @@
 
+using ChatApp.Api;
 using ChatApp.Api.ChatHub;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChatApp
 {
@@ -8,6 +12,28 @@ namespace ChatApp
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Configuration
+                .AddJsonFile("appsettings.json", optional: true)
+                .AddUserSecrets<Program>(optional: true)
+                .AddEnvironmentVariables();
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAngularApp",
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:4200")
+                              .AllowAnyHeader()
+                              .AllowAnyMethod()
+                              .AllowCredentials();
+                    });
+            });
+
+            builder.Services.AddDbContext<ChatDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
 
             // Add services to the container.
 
@@ -24,9 +50,9 @@ namespace ChatApp
 
             app.UseAuthorization();
 
-            app.MapHub<ChatHub>("/chat");
+            app.UseCors("AllowAngularApp");
 
-            app.MapControllers();
+            app.MapHub<ChatHub>("/chat");
 
             app.Run();
         }
