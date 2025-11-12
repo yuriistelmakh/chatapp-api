@@ -1,4 +1,5 @@
 ﻿using ChatApp.Api.Models;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChatApp.Api
@@ -12,7 +13,7 @@ namespace ChatApp.Api
 
         public DbSet<Chat> Chats => Set<Chat>();
         public DbSet<ChatMember> Members => Set<ChatMember>();
-        public DbSet<Message> Message => Set<Message>();
+        public DbSet<Message> Messages => Set<Message>();
         public DbSet<User> Users => Set<User>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -20,6 +21,7 @@ namespace ChatApp.Api
             modelBuilder.Entity<ChatMember>()
                 .HasIndex(cm => new { cm.ChatId, cm.UserId })
                 .IsUnique();
+
         }
     }
 }

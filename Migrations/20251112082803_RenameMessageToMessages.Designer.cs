@@ -4,6 +4,7 @@ using ChatApp.Api;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChatApp.Api.Migrations
 {
     [DbContext(typeof(ChatDbContext))]
-    partial class ChatDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251112082803_RenameMessageToMessages")]
+    partial class RenameMessageToMessages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,7 +72,7 @@ namespace ChatApp.Api.Migrations
                     b.HasIndex("ChatId", "UserId")
                         .IsUnique();
 
-                    b.ToTable("ChatMember");
+                    b.ToTable("Members");
                 });
 
             modelBuilder.Entity("ChatApp.Api.Models.Message", b =>
@@ -102,7 +105,7 @@ namespace ChatApp.Api.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Messages");
+                    b.ToTable("Message");
                 });
 
             modelBuilder.Entity("ChatApp.Api.Models.User", b =>
