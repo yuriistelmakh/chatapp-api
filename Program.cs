@@ -95,6 +95,12 @@ namespace ChatApp
 
             var app = builder.Build();
 
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<ChatDbContext>();
+                db.Database.Migrate();
+            }
+
             app.UseHttpsRedirection();
 
             app.UseCors("AllowAngularApp");

@@ -24,7 +24,9 @@ namespace ChatApp.Api.Services
 
         public async Task<IEnumerable<UserDto>> GetChatUsers(int chatId)
         {
-            var chat = await _context.Chats.FirstOrDefaultAsync(c => c.Id == chatId);
+            var chat = await _context.Chats.Include(c => c.Members)
+                .ThenInclude(m => m.User)
+                .FirstOrDefaultAsync(c => c.Id == chatId);
 
             return chat.Members.Select(m => new UserDto
             {
