@@ -1,5 +1,5 @@
 ﻿using ChatApp.Api.DTOs;
-using ChatApp.Api.Services;
+using ChatApp.Api.Services.AuthService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

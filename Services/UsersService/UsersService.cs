@@ -1,7 +1,7 @@
 ﻿using ChatApp.Api.DTOs;
 using Microsoft.EntityFrameworkCore;
 
-namespace ChatApp.Api.Services
+namespace ChatApp.Api.Services.UsersService
 {
     public class UsersService : IUsersService
     {

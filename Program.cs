@@ -1,9 +1,13 @@
 using ChatApp.Api;
 using ChatApp.Api.ChatHub;
-using ChatApp.Api.Services;
+using ChatApp.Api.Services.AuthService;
+using ChatApp.Api.Services.ChatService;
+using ChatApp.Api.Services.SentimentService;
+using ChatApp.Api.Services.UsersService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace ChatApp
 {
@@ -21,6 +25,7 @@ namespace ChatApp
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IChatService, ChatService>();
             builder.Services.AddScoped<IUsersService, UsersService>();
+            builder.Services.AddScoped<ISentimentService, SentimentService>();
 
             builder.Services.AddAuthentication("Bearer")
                 .AddJwtBearer(options =>

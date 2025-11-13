@@ -7,7 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace ChatApp.Api.Services
+namespace ChatApp.Api.Services.AuthService
 {
     public class AuthService : IAuthService
     {
@@ -35,7 +35,7 @@ namespace ChatApp.Api.Services
             await _context.SaveChangesAsync();
 
             var token = GenerateJwtToken(user);
-            return new AuthResult { Success = true, Token = token};
+            return new AuthResult { Success = true, Token = token };
         }
 
         public async Task<AuthResult> LoginAsync(AuthRequest request)

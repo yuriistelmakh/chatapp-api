@@ -1,6 +1,6 @@
 ﻿using ChatApp.Api.DTOs;
 
-namespace ChatApp.Api.Services
+namespace ChatApp.Api.Services.UsersService
 {
     public interface IUsersService
     {

@@ -1,4 +1,6 @@
-﻿namespace ChatApp.Api.DTOs
+﻿using Azure.AI.TextAnalytics;
+
+namespace ChatApp.Api.DTOs
 {
     public class MessageDto
     {
@@ -7,5 +9,6 @@
         public DateTime CreatedAt { get; set; }
         public string SenderName { get; set; } = string.Empty;
         public bool IsIncoming { get; set; }
+        public TextSentiment Sentiment { get; set; }
     }
 }

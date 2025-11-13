@@ -1,6 +1,6 @@
 ﻿using ChatApp.Api.DTOs;
 using ChatApp.Api.Models;
-using ChatApp.Api.Services;
+using ChatApp.Api.Services.ChatService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
@@ -27,8 +27,17 @@ namespace ChatApp.Api.ChatHub
 
         public async Task SendMessageToGroup(int chatId, int userId, MessageDto message)
         {
-            var savedMessage = await _chatService.SaveMessageAsync(chatId, userId, message);
-            await Clients.Group(chatId.ToString()).SendAsync("ReceiveMessage", userId, savedMessage);
+            try
+            {
+                var savedMessage = await _chatService.SaveMessageAsync(chatId, userId, message);
+                await Clients.Group(chatId.ToString()).SendAsync("ReceiveMessage", userId, savedMessage);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ERROR IN HUB: " + ex.Message);
+                Console.WriteLine(ex);
+                throw;
+            }
         }
 
         public async Task NewMember(int chatId, int userId)

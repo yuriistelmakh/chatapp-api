@@ -1,7 +1,7 @@
 ﻿using ChatApp.Api.ChatHub;
 using ChatApp.Api.DTOs;
 using ChatApp.Api.Models;
-using ChatApp.Api.Services;
+using ChatApp.Api.Services.ChatService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;

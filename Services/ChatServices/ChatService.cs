@@ -1,17 +1,20 @@
 ﻿using ChatApp.Api.DTOs;
 using ChatApp.Api.Exceptions;
 using ChatApp.Api.Models;
+using ChatApp.Api.Services.SentimentService;
 using Microsoft.EntityFrameworkCore;
 
-namespace ChatApp.Api.Services
+namespace ChatApp.Api.Services.ChatService
 {
     public class ChatService : IChatService
     {
         private readonly ChatDbContext _context;
+        private readonly ISentimentService _sentimentService;
 
-        public ChatService(ChatDbContext context)
+        public ChatService(ChatDbContext context, ISentimentService sentimentService)
         {
             _context = context;
+            _sentimentService = sentimentService;
         }
 
         public async Task<IEnumerable<ChatDto>> GetUserChatsAsync(int userId)
@@ -41,7 +44,8 @@ namespace ChatApp.Api.Services
                     Content = m.Content,
                     CreatedAt = m.CreatedAt,
                     SenderName = m.Sender.Username,
-                    IsIncoming = false
+                    IsIncoming = false,
+                    Sentiment = m.Sentiment
                 })?.ToListAsync() ?? [];
         }
 
@@ -53,6 +57,7 @@ namespace ChatApp.Api.Services
                 SenderId = userId,
                 Content = messageDto.Content,
                 CreatedAt = messageDto.CreatedAt,
+                Sentiment = await _sentimentService.GetMessageSentiment(messageDto.Content)
             };
 
             _context.Messages.Add(message);
@@ -65,7 +70,8 @@ namespace ChatApp.Api.Services
                 Id = message.Id,
                 Content = message.Content,
                 CreatedAt = message.CreatedAt,
-                SenderName = message.Sender?.Username ?? "Unknown"
+                SenderName = message.Sender?.Username ?? "Unknown",
+                Sentiment = message.Sentiment
             };
         }
 
