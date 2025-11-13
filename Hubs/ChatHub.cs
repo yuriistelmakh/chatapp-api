@@ -30,5 +30,11 @@ namespace ChatApp.Api.ChatHub
             var savedMessage = await _chatService.SaveMessageAsync(chatId, userId, message);
             await Clients.Group(chatId.ToString()).SendAsync("ReceiveMessage", userId, savedMessage);
         }
+
+        public async Task NewMember(int chatId, int userId)
+        {
+            var userDto = await _chatService.AddUserToChat(chatId, userId);
+            await Clients.All.SendAsync("NewMemberAdded", userDto);
+        }
     }
 }

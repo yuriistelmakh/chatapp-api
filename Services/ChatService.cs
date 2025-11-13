@@ -1,4 +1,5 @@
 ﻿using ChatApp.Api.DTOs;
+using ChatApp.Api.Exceptions;
 using ChatApp.Api.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -68,7 +69,7 @@ namespace ChatApp.Api.Services
             };
         }
 
-        public async Task<Chat> CreateChatAsync(CreateChatDto dto)
+        public async Task CreateChatAsync(CreateChatDto dto)
         {
             var members = await _context.Users
                 .Where(u => dto.MemberIds.Contains(u.Id))
@@ -76,7 +77,7 @@ namespace ChatApp.Api.Services
 
             var chat = new Chat
             {
-                Name = dto.ChatName,
+                Name = dto.Chat.Name,
                 IsGroup = dto.MemberIds.Count() > 2,
                 CreatedAt = DateTime.UtcNow,
                 Members = members.Select(u => new ChatMember
@@ -89,7 +90,57 @@ namespace ChatApp.Api.Services
             _context.Chats.Add(chat);
             await _context.SaveChangesAsync();
 
-            return chat;
+            dto.Chat.Id = chat.Id;
         }
+
+        public async Task<AddUserToChatDto> AddUserToChat(int chatId, int userId)
+        {
+            var chat = await _context.Chats
+                .Include(c => c.Members)
+                .FirstOrDefaultAsync(c => c.Id == chatId);
+
+            if (chat == null)
+                throw new NotFoundException($"Chat with ID {chatId} not found.");
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null)
+                throw new NotFoundException($"User with ID {userId} not found.");
+
+            if (chat.Members.Any(m => m.UserId == userId))
+                throw new InvalidOperationException("User is already a member of this chat.");
+
+            chat.Members.Add(new ChatMember
+            {
+                UserId = userId,
+                ChatId = chatId
+            });
+
+            await _context.SaveChangesAsync();
+
+            var chatDto = new ChatDto
+            {
+                Id = chat.Id,
+                Name = chat.Name,
+                IsGroup = chat.IsGroup,
+                CreatedAt = chat.CreatedAt
+            };
+
+            var userDto = new UserDto
+            {
+                Id = user.Id,
+                Username = user.Username,
+                CreatedAt = user.CreatedAt
+            };
+
+            var addUserToChatDto = new AddUserToChatDto()
+            {
+                Chat = chatDto,
+                User = userDto
+            };
+
+            return addUserToChatDto;
+        }
+
     }
 }

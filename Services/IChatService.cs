@@ -8,6 +8,7 @@ namespace ChatApp.Api.Services
         Task<IEnumerable<ChatDto>> GetUserChatsAsync(int userId);
         Task<MessageDto> SaveMessageAsync(int chatId, int userId, MessageDto message);
         Task<IEnumerable<MessageDto>> GetMessagesAsync(int chatId);
-        Task<Chat> CreateChatAsync(CreateChatDto dto);
+        Task CreateChatAsync(CreateChatDto dto);
+        Task<AddUserToChatDto> AddUserToChat(int chatId, int userId);
     }
 }

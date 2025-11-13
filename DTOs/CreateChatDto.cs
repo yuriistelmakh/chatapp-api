@@ -2,7 +2,7 @@
 {
     public class CreateChatDto
     {
-        public string ChatName { get; set; }
+        public ChatDto Chat { get; set; }
 
         public IEnumerable<int> MemberIds { get; set; } = [];
     }

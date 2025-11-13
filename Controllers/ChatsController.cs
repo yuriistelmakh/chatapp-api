@@ -36,19 +36,11 @@ namespace ChatApp.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateChat(CreateChatDto createChatDto)
         {
-            var chat = await _chatService.CreateChatAsync(createChatDto);
+            await _chatService.CreateChatAsync(createChatDto);
 
-            var chatDto = new ChatDto 
-            { 
-                Id = chat.Id, 
-                CreatedAt = chat.CreatedAt, 
-                IsGroup = chat.IsGroup, 
-                Name = chat.Name!
-            };
+            await _hubContext.Clients.All.SendAsync("ChatCreated", createChatDto);
 
-            await _hubContext.Clients.All.SendAsync("ChatCreated", chatDto);
-
-            return Ok(chatDto);
+            return Ok(createChatDto);
         }
     }
 }
